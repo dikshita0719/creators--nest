@@ -11,6 +11,7 @@ COPY apps/api ./apps/api
 COPY prisma ./prisma
 
 RUN pnpm install --frozen-lockfile
+RUN pnpm --filter @creators/types build
 RUN pnpm exec prisma generate --schema prisma/schema.prisma
 RUN pnpm --filter api build
 
