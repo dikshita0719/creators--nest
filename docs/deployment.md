@@ -81,10 +81,10 @@ Enable Render auto-deploy for the `main` branch after the service is connected t
 
    | Setting          | Value          |
    | ---------------- | -------------- |
-   | Root Directory   | `apps/web`     |
-   | Build Command    | `pnpm build`   |
-   | Output Directory | `.next`        |
-   | Install Command  | `pnpm install` |
+   | Root Directory   | repository root |
+   | Build Command    | `pnpm --filter web build` |
+   | Output Directory | `apps/web/.next`          |
+   | Install Command  | `pnpm install --frozen-lockfile` |
 
 4. Add the web environment variable. Set `NEXT_PUBLIC_API_URL` to the actual Render API URL, for example:
 
@@ -99,7 +99,7 @@ Enable Render auto-deploy for the `main` branch after the service is connected t
 
    [https://app.example.com](https://app.example.com)
 
-If Vercel cannot install from the `apps/web` directory because it needs the workspace lockfile, set the repository root as the install context and keep the web project directory as `apps/web`. The build must still target the web workspace.
+Because this is a pnpm monorepo, set Vercel's **Root Directory** to the repository root, not `apps/web`, so Vercel can see `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `packages/types`. Use `pnpm --filter web build` as the build command and `apps/web/.next` as the output directory. This makes the `workspace:*` dependency resolve during the Vercel build.
 
 ## 4. Verify Deployment
 
