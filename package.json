@@ -3,16 +3,16 @@
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "scripts": {
-    "dev": "concurrently -n web,api -c blue,green \"pnpm --filter web dev\" \"pnpm --filter api start:dev\"",
-    "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test",
-    "build": "pnpm -r build",
+    "dev": "concurrently -n web,api -c blue,green \"corepack pnpm --filter web dev\" \"corepack pnpm --filter api start:dev\"",
+    "lint": "corepack pnpm -r lint",
+    "typecheck": "corepack pnpm -r typecheck",
+    "test": "corepack pnpm -r test",
+    "build": "corepack pnpm -r build",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "openapi:export": "pnpm --filter api openapi:export"
+    "openapi:export": "corepack pnpm --filter api openapi:export"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
