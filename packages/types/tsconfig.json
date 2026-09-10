@@ -1,0 +1,5 @@
+{
+  "extends": "@creators/config/tsconfig",
+  "compilerOptions": { "noEmit": true },
+  "include": ["src"]
+}
