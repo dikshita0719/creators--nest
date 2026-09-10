@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  client
+  creator
+  admin
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  completed
+  cancelled
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  role      UserRole  @default(client)
+  createdAt DateTime  @default(now())
+  profile   Profile?
+  creator   Creator?
+  bookings  Booking[] @relation("ClientBookings")
+  messages  Message[]
+  reviews   Review[]
+}
+
+model Profile {
+  userId      String @id
+  displayName String
+  avatarUrl   String?
+  bio         String?
+  location    String?
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Creator {
+  userId      String    @id
+  categories  String[]
+  hourlyRate  Int
+  active      Boolean   @default(true)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listings    Listing[]
+  bookings    Booking[] @relation("CreatorBookings")
+}
+
+model Listing {
+  id          String    @id @default(cuid())
+  creatorId   String
+  title       String
+  description String
+  price       Int
+  currency    String    @default("USD")
+  active      Boolean   @default(true)
+  creator     Creator   @relation(fields: [creatorId], references: [userId], onDelete: Cascade)
+  bookings    Booking[]
+}
+
+model Booking {
+  id        String        @id @default(cuid())
+  clientId  String
+  creatorId String
+  listingId String
+  startAt   DateTime
+  endAt     DateTime
+  status    BookingStatus @default(pending)
+  amount    Int
+  currency  String        @default("USD")
+  createdAt DateTime      @default(now())
+  client    User          @relation("ClientBookings", fields: [clientId], references: [id])
+  creator   Creator       @relation("CreatorBookings", fields: [creatorId], references: [userId])
+  listing   Listing       @relation(fields: [listingId], references: [id])
+  messages  Message[]
+  review    Review?
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  bookingId String
+  senderId  String
+  content   String
+  createdAt DateTime @default(now())
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  sender    User     @relation(fields: [senderId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  bookingId String   @unique
+  clientId  String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  client    User     @relation(fields: [clientId], references: [id])
+}
