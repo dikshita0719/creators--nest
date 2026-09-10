@@ -2,6 +2,12 @@
 
 A pragmatic two-sided marketplace MVP connecting clients with videographers and creators. Framefolk is designed to feel like a small creative studio directory: clients can discover a point of view, while creators can present a focused offering and manage booking requests. Auth and payments are intentionally local stubs with documented replacement points.
 
+## Deployment
+
+- [Deployment guide](docs/deployment.md)
+- Web: [https://creators-nest.vercel.app](https://creators-nest.vercel.app) _(placeholder)_
+- API: [https://creators-nest-api.onrender.com](https://creators-nest-api.onrender.com) _(placeholder)_
+
 ## Stack
 
 TypeScript, pnpm workspaces, Next.js App Router, NestJS, Prisma, PostgreSQL, Zod, React Hook Form, and Tailwind CSS.
