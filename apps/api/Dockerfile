@@ -22,4 +22,4 @@ EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:3001/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
 
-CMD ["node", "dist/src/main.js"]
+CMD ["sh", "-c", "pnpm exec prisma migrate deploy --schema ../../prisma/schema.prisma && node dist/src/main.js"]

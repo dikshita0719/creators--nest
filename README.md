@@ -71,6 +71,10 @@ The interface uses an editorial studio direction: paper texture, ink typography,
 
 The deployed MVP is suitable for testing, not real payments. The API verifies bcrypt password hashes and signs one-hour HS256 JWTs using `JWT_SECRET`, then delivers them through secure httpOnly cookies; the browser keeps only the display role locally. `PaymentService` returns a fake intent and simulates capture. Before monetization, replace the payment stubs with Stripe Connect PaymentIntents, persisted provider IDs, and verified webhook handling. See [docs/architecture.md](docs/architecture.md) and [docs/deployment.md](docs/deployment.md).
 
+## Registration workflow
+
+Registration flows from the browser form to `POST /auth/register` on the API. The API validates the email, password, role, and display name, hashes the password with bcrypt, creates the user and profile in PostgreSQL, signs a JWT, and returns it as an httpOnly cookie. The browser then requests `/users/me` and `/bookings` using that cookie. To troubleshoot a failed registration, open browser developer tools, inspect the Network tab, and select `POST /auth/register`: `403` means the API `CORS_ORIGIN` does not match the web origin, a database error mentioning `passwordHash` means migrations have not run, and a unique-constraint error means the email is already registered.
+
 ## Project layout
 
 `apps/web` is the Next frontend, `apps/api` is the Nest API, `packages/types` contains shared Zod contracts, `prisma` contains schema/migrations/seed, and `docs` contains architecture, ADR, and OpenAPI documentation. CI runs install, lint, typecheck, tests, and builds on pushes and pull requests.

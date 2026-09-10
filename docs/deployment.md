@@ -69,7 +69,7 @@ Keep both Neon connection strings private. Do not commit them to GitHub or add t
 
 ### Render monorepo note
 
-The current Dockerfile copies the root workspace manifest, lockfile, shared packages, and Prisma schema. Leave Render's Root Directory blank so Docker uses the repository root as its build context. The image compiles `@creators/types`, generates Prisma Client, builds the API, and starts `dist/src/main.js`.
+The current Dockerfile copies the root workspace manifest, lockfile, shared packages, and Prisma schema. Leave Render's Root Directory blank so Docker uses the repository root as its build context. The image compiles `@creators/types`, generates Prisma Client, builds the API, applies committed migrations at startup, and then starts `dist/src/main.js`.
 
 Enable Render auto-deploy for the `main` branch after the service is connected to GitHub. GitHub Actions runs install, Prisma generation, lint, typecheck, tests, and builds on pushes and pull requests. A passing CI run should be followed by the Render deployment for the pushed commit.
 
@@ -99,7 +99,7 @@ Enable Render auto-deploy for the `main` branch after the service is connected t
 
    [https://app.example.com](https://app.example.com)
 
-Because this is a pnpm monorepo, set Vercel's **Root Directory** to the repository root, not `apps/web`, so Vercel can see `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `packages/types`. Use `pnpm --filter web build` as the build command and `apps/web/.next` as the output directory. This makes the `workspace:*` dependency resolve during the Vercel build.
+Because this is a pnpm monorepo, set Vercel's **Root Directory** to the repository root, not `apps/web`, so Vercel can see `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `packages/types`. Use `pnpm --filter @creators/types build && pnpm --filter web build` as the build command and `apps/web/.next` as the output directory. This makes the `workspace:*` dependency resolve during the Vercel build.
 
 ## 4. Verify Deployment
 
