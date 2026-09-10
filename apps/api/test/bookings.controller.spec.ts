@@ -20,7 +20,7 @@ function createDependencies() {
 describe('BookingsController', () => {
   it('creates a pending booking and payment intent for a client', async () => {
     const dependencies = createDependencies();
-    dependencies.prisma.listing.findUniqueOrThrow.mockResolvedValue({ id: 'listing-1', creatorId: 'creator-1', price: 1200, currency: 'USD' });
+    dependencies.prisma.listing.findUniqueOrThrow.mockResolvedValue({ id: 'listing-1', creatorId: 'creator-1', price: 1200, currency: 'USD', active: true });
     dependencies.prisma.booking.create.mockResolvedValue({ id: 'booking-1', amount: 1200, currency: 'USD', status: 'pending' });
     dependencies.payments.createIntent.mockResolvedValue({ paymentIntentId: 'pi_stub_1' });
     const controller = new BookingsController(dependencies.prisma as never, dependencies.payments as never);
@@ -33,6 +33,18 @@ describe('BookingsController', () => {
     expect(dependencies.prisma.booking.create).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ clientId: 'client-1', creatorId: 'creator-1', amount: 1200, currency: 'USD' }) }));
     expect(dependencies.payments.createIntent).toHaveBeenCalledWith(1200, 'USD');
     expect(result).toEqual(expect.objectContaining({ id: 'booking-1', payment: { paymentIntentId: 'pi_stub_1' } }));
+  });
+
+  it('rejects bookings for inactive listings', async () => {
+    const dependencies = createDependencies();
+    dependencies.prisma.listing.findUniqueOrThrow.mockResolvedValue({ id: 'listing-1', creatorId: 'creator-1', price: 1200, currency: 'USD', active: false });
+    const controller = new BookingsController(dependencies.prisma as never, dependencies.payments as never);
+
+    await expect(controller.create(
+      { user: { id: 'client-1', role: 'client' } },
+      { listingId: 'listing-1', startAt: new Date('2026-10-15T10:00:00Z'), endAt: new Date('2026-10-15T18:00:00Z') },
+    )).rejects.toThrow('Listing is not accepting bookings');
+    expect(dependencies.prisma.booking.create).not.toHaveBeenCalled();
   });
 
   it('captures payment before confirming a pending creator booking', async () => {

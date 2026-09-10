@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { createBookingInputSchema } from '@creators/types';
 import { AuthGuard } from '../auth/auth.guard';
@@ -25,6 +25,7 @@ export class BookingsController {
   @Roles('client')
   async create(@Req() request: any, @Body(new ZodValidationPipe(createBookingInputSchema)) body: any) {
     const listing = await this.prisma.listing.findUniqueOrThrow({ where: { id: body.listingId } });
+    if (!listing.active) throw new BadRequestException('Listing is not accepting bookings');
     const booking = await this.prisma.booking.create({ data: { clientId: request.user.id, creatorId: listing.creatorId, listingId: listing.id, startAt: body.startAt, endAt: body.endAt, amount: listing.price, currency: listing.currency } });
     return { ...booking, payment: await this.payments.createIntent(booking.amount, booking.currency) };
   }

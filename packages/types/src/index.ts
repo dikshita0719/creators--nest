@@ -56,6 +56,9 @@ export const createBookingInputSchema = z.object({
   listingId: z.string().min(1),
   startAt: z.coerce.date(),
   endAt: z.coerce.date(),
+}).refine((input) => input.endAt > input.startAt, {
+  message: 'End time must be after start time',
+  path: ['endAt'],
 });
 
 export type User = z.infer<typeof userSchema>;
