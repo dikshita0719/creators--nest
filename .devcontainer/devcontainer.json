@@ -1,0 +1,7 @@
+{
+  "name": "Creators Marketplace",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+  "forwardPorts": [3000, 3001, 5432],
+  "postCreateCommand": "corepack enable && corepack prepare pnpm@9.15.4 --activate && pnpm install && pnpm db:generate && pnpm db:migrate",
+  "customizations": { "vscode": { "extensions": ["Prisma.prisma", "dbaeumer.vscode-eslint"] } }
+}
