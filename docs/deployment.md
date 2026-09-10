@@ -54,16 +54,18 @@ Keep both Neon connection strings private. Do not commit them to GitHub or add t
    DATABASE_URL=your-neon-pooled-connection-string
    DATABASE_URL_UNPOOLED=your-neon-direct-connection-string
    NODE_ENV=production
-   CORS_ORIGIN=https://creators-nest-web.vercel.app
-   JWT_SECRET=your-long-random-secret
+   CORS_ORIGIN=https://app.example.com
+   JWT_SECRET=at-least-32-random-characters
    ```
+
+   `CORS_ORIGIN` must be the exact web origin, such as `https://app.example.com`; credentialed CORS cannot use `*`. For the strong cookie setup, deploy the web app at `app.example.com` and the API at `api.example.com` so both are same-site. The API sets the JWT as an httpOnly, secure, `SameSite=Lax` cookie and rejects state-changing requests from other origins.
 
    Render provides `PORT` automatically. Add the Clerk, Stripe, UploadThing, Resend, and Mux variables from `.env.example` when those integrations are configured.
 
 5. Deploy the service.
-6. Copy the API URL assigned by Render, for example:
+6. Point `api.example.com` at the Render service, then use that custom API URL:
 
-   [https://your-api.onrender.com](https://your-api.onrender.com)
+   [https://api.example.com](https://api.example.com)
 
 ### Render monorepo note
 
@@ -87,15 +89,15 @@ Enable Render auto-deploy for the `main` branch after the service is connected t
 4. Add the web environment variable. Set `NEXT_PUBLIC_API_URL` to the actual Render API URL, for example:
 
    ```env
-   NEXT_PUBLIC_API_URL=https://creators-nest-api.onrender.com
+   NEXT_PUBLIC_API_URL=https://api.example.com
    ```
 
    Add the public Clerk and Stripe variables required by the web app. Keep server-only secrets out of `NEXT_PUBLIC_*` variables.
 
 5. Deploy the project.
-6. The current deployed web URL is:
+6. The production web URL is:
 
-   [https://creators-nest-web.vercel.app](https://creators-nest-web.vercel.app)
+   [https://app.example.com](https://app.example.com)
 
 If Vercel cannot install from the `apps/web` directory because it needs the workspace lockfile, set the repository root as the install context and keep the web project directory as `apps/web`. The build must still target the web workspace.
 

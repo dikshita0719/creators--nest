@@ -61,6 +61,10 @@ export const createBookingInputSchema = z.object({
   path: ['endAt'],
 });
 
+export const createMessageInputSchema = z.object({
+  content: z.string().trim().min(1).max(5000),
+});
+
 export type User = z.infer<typeof userSchema>;
 export type Listing = z.infer<typeof listingSchema>;
 export type Booking = z.infer<typeof bookingSchema>;
@@ -68,3 +72,4 @@ export type RegisterInput = z.infer<typeof registerInputSchema>;
 export type LoginInput = z.infer<typeof loginInputSchema>;
 export type CreateListingInput = z.infer<typeof createListingInputSchema>;
 export type CreateBookingInput = z.infer<typeof createBookingInputSchema>;
+export type CreateMessageInput = z.infer<typeof createMessageInputSchema>;

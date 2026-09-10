@@ -26,6 +26,14 @@ paths:
         "201":
           description: ""
       tags: *a1
+  /auth/logout:
+    post:
+      operationId: AuthController_logout
+      parameters: []
+      responses:
+        "201":
+          description: ""
+      tags: *a1
   /auth/me:
     get:
       operationId: AuthController_me
@@ -110,6 +118,25 @@ paths:
           description: ""
       security: *a3
       tags: *a4
+  /bookings/{bookingId}/messages:
+    get:
+      operationId: MessagesController_list
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      security: &a5
+        - bearer: []
+      tags: &a6
+        - messages
+    post:
+      operationId: MessagesController_create
+      parameters: []
+      responses:
+        "201":
+          description: ""
+      security: *a5
+      tags: *a6
 info:
   title: Creators Marketplace API
   description: ""

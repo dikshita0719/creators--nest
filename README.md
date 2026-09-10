@@ -43,7 +43,7 @@ If that container already exists, use `docker start creators-postgres` instead.
 
 Open `http://localhost:3000` for the web app. The API runs at `http://localhost:3001`; `GET /health` returns `{ "ok": true }`. Swagger UI is available at `/docs`.
 
-The seed accounts are `admin@example.com`, `creator@example.com`, and `client@example.com`. The stub login only needs an email and any non-empty password.
+The seed accounts are `admin@example.com`, `creator@example.com`, and `client@example.com`. The demo password for each is `password123`.
 
 ## Check the core flow
 
@@ -69,7 +69,7 @@ The interface uses an editorial studio direction: paper texture, ink typography,
 
 ## API and security notes
 
-The deployed MVP is suitable for testing, not real payments. The JWT is a base64url payload with a `stub` prefix, the API does not verify passwords, and the browser stores it in `localStorage`. `PaymentService` returns a fake intent and simulates capture. Before monetization, replace these stubs with Clerk authentication, secure session handling, Stripe Connect PaymentIntents, persisted provider IDs, and verified webhook handling. See [docs/architecture.md](docs/architecture.md) and [docs/deployment.md](docs/deployment.md).
+The deployed MVP is suitable for testing, not real payments. The API verifies bcrypt password hashes and signs one-hour HS256 JWTs using `JWT_SECRET`, then delivers them through secure httpOnly cookies; the browser keeps only the display role locally. `PaymentService` returns a fake intent and simulates capture. Before monetization, replace the payment stubs with Stripe Connect PaymentIntents, persisted provider IDs, and verified webhook handling. See [docs/architecture.md](docs/architecture.md) and [docs/deployment.md](docs/deployment.md).
 
 ## Project layout
 

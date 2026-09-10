@@ -22,15 +22,16 @@ enum BookingStatus {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  role      UserRole  @default(client)
-  createdAt DateTime  @default(now())
-  profile   Profile?
-  creator   Creator?
-  bookings  Booking[] @relation("ClientBookings")
-  messages  Message[]
-  reviews   Review[]
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String?
+  role         UserRole  @default(client)
+  createdAt    DateTime  @default(now())
+  profile      Profile?
+  creator      Creator?
+  bookings     Booking[] @relation("ClientBookings")
+  messages     Message[]
+  reviews      Review[]
 }
 
 model Profile {
