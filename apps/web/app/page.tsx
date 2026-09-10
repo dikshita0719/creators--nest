@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function Home() { return <main><span className="eyebrow">A better brief starts here</span><h1>Find the person who can see your story.</h1><p className="lede">Framefolk connects clients with thoughtful videographers for events, brands, and the moments that deserve more than a phone clip.</p><div className="actions"><Link className="button" href="/listings">Browse creators</Link><Link className="button secondary" href="/auth/register">Join the marketplace</Link></div></main>; }
