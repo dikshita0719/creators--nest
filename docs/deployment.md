@@ -6,19 +6,23 @@ This guide deploys the marketplace with Neon for PostgreSQL, Render for the Nest
 
 1. Sign up at [neon.tech](https://neon.tech).
 2. Create a new project.
-3. Copy the project's PostgreSQL connection string.
-4. Copy the full connection string and set `DATABASE_URL` locally in `.env` and in the Render API service.
+3. Click **Connect** and copy both PostgreSQL connection strings:
+   - The pooled URL, whose hostname includes `-pooler`, for the Render API.
+   - The direct or unpooled URL, whose hostname does not include `-pooler`, for Prisma CLI commands.
+4. Set both values locally in `.env` and in the Render API service.
 
    ```env
    DATABASE_URL=postgresql://user:password@host:5432/dbname?sslmode=require
+   DATABASE_URL_UNPOOLED=postgresql://user:password@host:5432/dbname?sslmode=require
    ```
 
 5. Install dependencies and apply the committed production migrations:
 
    ```powershell
-   $env:DATABASE_URL="your-neon-connection-string"
+   $env:DATABASE_URL="your-neon-pooled-connection-string"
+   $env:DATABASE_URL_UNPOOLED="your-neon-direct-connection-string"
    corepack pnpm install
-   corepack pnpm exec prisma migrate deploy
+   corepack pnpm exec prisma migrate deploy --schema prisma/schema.prisma
    ```
 
 6. Verify the database connection and inspect the schema:
@@ -27,7 +31,7 @@ This guide deploys the marketplace with Neon for PostgreSQL, Render for the Nest
    corepack pnpm db:studio
    ```
 
-Keep the Neon connection string private. Do not commit it to GitHub or add it to Vercel. Do not run `db:seed` against the production database unless demo data is intentional.
+Keep both Neon connection strings private. Do not commit them to GitHub or add them to Vercel. Do not run `db:seed` against the production database unless demo data is intentional.
 
 ## 2. Deploy API (Render)
 
@@ -47,7 +51,8 @@ Keep the Neon connection string private. Do not commit it to GitHub or add it to
 4. Add these required environment variables:
 
    ```env
-   DATABASE_URL=your-neon-connection-string
+   DATABASE_URL=your-neon-pooled-connection-string
+   DATABASE_URL_UNPOOLED=your-neon-direct-connection-string
    NODE_ENV=production
    CORS_ORIGIN=https://creators-nest-web.vercel.app
    JWT_SECRET=your-long-random-secret
