@@ -82,7 +82,7 @@ Enable Render auto-deploy for the `main` branch after the service is connected t
    | Setting          | Value          |
    | ---------------- | -------------- |
    | Root Directory   | repository root |
-   | Build Command    | `pnpm --filter web build` |
+   | Build Command    | `pnpm --filter @creators/types build && pnpm --filter web build` |
    | Output Directory | `apps/web/.next`          |
    | Install Command  | `pnpm install --frozen-lockfile` |
 
