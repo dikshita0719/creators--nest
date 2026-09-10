@@ -5,8 +5,10 @@ A pragmatic two-sided marketplace MVP connecting clients with videographers and 
 ## Deployment
 
 - [Deployment guide](docs/deployment.md)
-- Web: [https://creators-nest.vercel.app](https://creators-nest.vercel.app) _(placeholder)_
-- API: [https://creators-nest-api.onrender.com](https://creators-nest-api.onrender.com) _(placeholder)_
+- Web: [https://creators-nest-web.vercel.app](https://creators-nest-web.vercel.app)
+- API: deploys on Render; use the service URL in `NEXT_PUBLIC_API_URL` and `CORS_ORIGIN`
+
+GitHub Actions CI is passing, and Render auto-deploys the `main` branch after successful changes. The API health endpoint is available at `/health` on the Render service URL.
 
 ## Stack
 
@@ -61,12 +63,13 @@ The interface uses an editorial studio direction: paper texture, ink typography,
 - `corepack pnpm test`: run workspace tests
 - `corepack pnpm build`: build web and API
 - `corepack pnpm db:migrate`: apply the committed Prisma migration
+- `corepack pnpm exec prisma migrate deploy`: apply committed migrations to a production database
 - `corepack pnpm db:studio`: open Prisma Studio
 - `corepack pnpm openapi:export`: regenerate `docs/api/openapi.yaml` from Nest controllers
 
 ## API and security notes
 
-The JWT is a base64url payload with a `stub` prefix, and the API does not verify passwords. The browser stores it in `localStorage` for MVP simplicity. Before production, use Clerk/Auth0 verification and an httpOnly secure cookie. `PaymentService` returns a fake intent and logs capture; replace it with Stripe Connect PaymentIntents, persisted provider IDs, and webhook handling. See `docs/architecture.md`.
+The deployed MVP is suitable for testing, not real payments. The JWT is a base64url payload with a `stub` prefix, the API does not verify passwords, and the browser stores it in `localStorage`. `PaymentService` returns a fake intent and simulates capture. Before monetization, replace these stubs with Clerk authentication, secure session handling, Stripe Connect PaymentIntents, persisted provider IDs, and verified webhook handling. See [docs/architecture.md](docs/architecture.md) and [docs/deployment.md](docs/deployment.md).
 
 ## Project layout
 
