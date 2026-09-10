@@ -2,7 +2,8 @@ import { csrfOriginMiddleware } from '../src/auth/csrf-origin.middleware';
 
 describe('csrfOriginMiddleware', () => {
   beforeEach(() => {
-    process.env.CORS_ORIGIN = 'https://app.example.com';
+    delete process.env.CORS_ORIGIN;
+    process.env.CORS_ORIGINS = 'https://app.example.com,https://preview.example.com';
   });
 
   it('rejects state-changing requests from another origin', () => {
@@ -19,7 +20,7 @@ describe('csrfOriginMiddleware', () => {
     const response = { status: jest.fn().mockReturnThis(), json: jest.fn() };
     const next = jest.fn();
 
-    csrfOriginMiddleware({ method: 'POST', headers: { origin: 'https://app.example.com' } } as never, response as never, next);
+    csrfOriginMiddleware({ method: 'POST', headers: { origin: 'https://preview.example.com' } } as never, response as never, next);
     csrfOriginMiddleware({ method: 'POST', headers: {} } as never, response as never, next);
 
     expect(next).toHaveBeenCalledTimes(2);

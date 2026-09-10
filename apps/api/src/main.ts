@@ -3,13 +3,13 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
-import { csrfOriginMiddleware } from './auth/csrf-origin.middleware';
+import { allowedOrigins, csrfOriginMiddleware } from './auth/csrf-origin.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const webOrigin = process.env.CORS_ORIGIN ?? 'http://localhost:3000';
-  if (process.env.NODE_ENV === 'production' && !webOrigin.startsWith('https://')) throw new Error('CORS_ORIGIN must be an HTTPS origin in production');
-  app.enableCors({ origin: webOrigin, credentials: true });
+  const webOrigins = allowedOrigins();
+  if (process.env.NODE_ENV === 'production' && webOrigins.some((origin) => !origin.startsWith('https://'))) throw new Error('CORS_ORIGINS must contain only HTTPS origins in production');
+  app.enableCors({ origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => callback(null, !origin || webOrigins.includes(origin)), credentials: true });
   app.use(cookieParser());
   app.use(csrfOriginMiddleware);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));

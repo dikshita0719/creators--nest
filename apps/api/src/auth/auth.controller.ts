@@ -23,6 +23,7 @@ export class AuthController {
   }
 
   private cookieOptions() {
-    return { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' as const, maxAge: 60 * 60 * 1000, path: '/' };
+    const sameSite = process.env.COOKIE_SAME_SITE === 'none' ? 'none' as const : 'lax' as const;
+    return { httpOnly: true, secure: process.env.NODE_ENV === 'production' || sameSite === 'none', sameSite, maxAge: 60 * 60 * 1000, path: '/' };
   }
 }

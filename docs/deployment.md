@@ -54,11 +54,12 @@ Keep both Neon connection strings private. Do not commit them to GitHub or add t
    DATABASE_URL=your-neon-pooled-connection-string
    DATABASE_URL_UNPOOLED=your-neon-direct-connection-string
    NODE_ENV=production
-   CORS_ORIGIN=https://app.example.com
+   CORS_ORIGINS=https://creators-nest-web.vercel.app,https://creators-nest-q88335tyh-dikshita0719s-projects.vercel.app
+   COOKIE_SAME_SITE=none
    JWT_SECRET=at-least-32-random-characters
    ```
 
-   `CORS_ORIGIN` must be the exact web origin, such as `https://app.example.com`; credentialed CORS cannot use `*`. For the strong cookie setup, deploy the web app at `app.example.com` and the API at `api.example.com` so both are same-site. The API sets the JWT as an httpOnly, secure, `SameSite=Lax` cookie and rejects state-changing requests from other origins.
+   `CORS_ORIGINS` is a comma-separated list of exact web origins without trailing slashes; credentialed CORS cannot use `*`. `COOKIE_SAME_SITE=none` is required while Vercel and Render use different sites. For the strong cookie setup later, deploy the web app at `app.example.com` and the API at `api.example.com`, then use `CORS_ORIGINS=https://app.example.com` and `COOKIE_SAME_SITE=lax`.
 
    Render provides `PORT` automatically. Add the Clerk, Stripe, UploadThing, Resend, and Mux variables from `.env.example` when those integrations are configured.
 
@@ -117,10 +118,11 @@ Because this is a pnpm monorepo, set Vercel's **Root Directory** to the reposito
 
    [https://creators-nest-web.vercel.app](https://creators-nest-web.vercel.app)
 
-3. Check that API CORS allows the deployed web domain. Set the Render `CORS_ORIGIN` value to the exact Vercel origin, without a trailing path:
+3. Check that API CORS allows the deployed web domain. Set Render's `CORS_ORIGINS` value to the exact Vercel origins, without trailing slashes:
 
    ```env
-   CORS_ORIGIN=https://creators-nest-web.vercel.app
+   CORS_ORIGINS=https://creators-nest-web.vercel.app,https://creators-nest-q88335tyh-dikshita0719s-projects.vercel.app
+   COOKIE_SAME_SITE=none
    ```
 
 4. Test the browser flow: sign in, browse a listing, submit a booking request, and confirm that the API responds without CORS or database errors.
