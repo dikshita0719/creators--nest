@@ -1,86 +1,126 @@
-openapi: 3.0.3
-info:
-  title: Creators Marketplace API
-  version: 0.1.0
-  description: MVP REST API for listings and booking requests.
-servers:
-  - url: http://localhost:3001
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: stub-jwt
-  schemas:
-    Listing:
-      type: object
-      required: [id, creatorId, title, description, price, currency, active]
-      properties:
-        id: { type: string }
-        creatorId: { type: string }
-        title: { type: string }
-        description: { type: string }
-        price: { type: integer, minimum: 0 }
-        currency: { type: string, example: USD }
-        active: { type: boolean }
-    Booking:
-      type: object
-      required: [id, clientId, creatorId, listingId, startAt, endAt, status, amount, currency]
-      properties:
-        id: { type: string }
-        clientId: { type: string }
-        creatorId: { type: string }
-        listingId: { type: string }
-        startAt: { type: string, format: date-time }
-        endAt: { type: string, format: date-time }
-        status: { type: string, enum: [pending, confirmed, completed, cancelled] }
-        amount: { type: integer }
-        currency: { type: string }
+openapi: 3.0.0
 paths:
   /health:
     get:
-      summary: Health check
-      responses: { '200': { description: Healthy } }
+      operationId: AppController_health
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      tags:
+        - health
   /auth/register:
     post:
-      summary: Register a stub user
-      responses: { '201': { description: Registered } }
+      operationId: AuthController_register
+      parameters: []
+      responses:
+        "201":
+          description: ""
+      tags: &a1
+        - auth
   /auth/login:
     post:
-      summary: Log in and receive a stub token
-      responses: { '201': { description: Logged in } }
+      operationId: AuthController_login
+      parameters: []
+      responses:
+        "201":
+          description: ""
+      tags: *a1
   /auth/me:
     get:
-      security: [{ bearerAuth: [] }]
-      responses: { '200': { description: Current user } }
+      operationId: AuthController_me
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      security:
+        - bearer: []
+      tags: *a1
   /users/me:
     get:
-      security: [{ bearerAuth: [] }]
-      responses: { '200': { description: Current profile } }
+      operationId: UsersController_me
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      security:
+        - bearer: []
+      tags:
+        - users
   /listings:
     get:
-      responses: { '200': { description: Active listings } }
+      operationId: ListingsController_list
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      tags: &a2
+        - listings
     post:
-      security: [{ bearerAuth: [] }]
-      responses: { '201': { description: Listing created } }
+      operationId: ListingsController_create
+      parameters: []
+      responses:
+        "201":
+          description: ""
+      security:
+        - bearer: []
+      tags: *a2
   /listings/{id}:
     get:
-      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
-      responses: { '200': { description: Listing detail } }
+      operationId: ListingsController_get
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      tags: *a2
   /bookings:
     get:
-      security: [{ bearerAuth: [] }]
-      responses: { '200': { description: Role-filtered bookings } }
+      operationId: BookingsController_list
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      security: &a3
+        - bearer: []
+      tags: &a4
+        - bookings
     post:
-      security: [{ bearerAuth: [] }]
-      responses: { '201': { description: Pending booking created } }
+      operationId: BookingsController_create
+      parameters: []
+      responses:
+        "201":
+          description: ""
+      security: *a3
+      tags: *a4
   /bookings/{id}:
     get:
-      security: [{ bearerAuth: [] }]
-      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
-      responses: { '200': { description: Booking detail } }
+      operationId: BookingsController_get
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      security: *a3
+      tags: *a4
   /bookings/{id}/confirm:
     post:
-      security: [{ bearerAuth: [] }]
-      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
-      responses: { '201': { description: Confirmed booking } }
+      operationId: BookingsController_confirm
+      parameters: []
+      responses:
+        "201":
+          description: ""
+      security: *a3
+      tags: *a4
+info:
+  title: Creators Marketplace API
+  description: ""
+  version: 0.1.0
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas: {}

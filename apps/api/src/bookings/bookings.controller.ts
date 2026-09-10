@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { createBookingInputSchema } from '@creators/types';
 import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -8,6 +9,8 @@ import { PrismaService } from '../prisma.service';
 import { PaymentService } from '../payment.service';
 
 @Controller('bookings')
+@ApiTags('bookings')
+@ApiBearerAuth()
 @UseGuards(AuthGuard)
 export class BookingsController {
   constructor(private readonly prisma: PrismaService, private readonly payments: PaymentService) {}

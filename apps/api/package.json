@@ -8,7 +8,7 @@
     "lint": "eslint --config ../../packages/config/eslint.config.mjs src",
     "typecheck": "tsc --noEmit",
     "test": "jest --passWithNoTests",
-    "openapi:export": "node scripts/export-openapi.mjs"
+    "openapi:export": "tsx scripts/export-openapi.ts"
   },
   "dependencies": {
     "@creators/types": "workspace:*",
@@ -19,6 +19,7 @@
     "@prisma/client": "^6.1.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "yaml": "^2.6.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {
